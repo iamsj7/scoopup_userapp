@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
+import 'package:scoopup_userapp/restaurant_detail_screen.dart';
 import 'package:scoopup_userapp/menu_screen.dart';
 
 class RestaurantScreen extends StatefulWidget {
@@ -15,6 +16,7 @@ class RestaurantScreen extends StatefulWidget {
 
 class _RestaurantScreenState extends State<RestaurantScreen> {
   List<Map<String, dynamic>> restaurants = [];
+  final String baseUrl = 'https://menu.scoopup.app';
 
   @override
   void initState() {
@@ -24,7 +26,7 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
 
   Future<void> fetchRestaurants(int cityId) async {
     final response = await http.get(
-      Uri.parse('https://menu.scoopup.app/api/v2/client/vendor/list/$cityId'),
+      Uri.parse('$baseUrl/api/v2/client/vendor/list/$cityId'),
     );
 
     if (response.statusCode == 200) {
@@ -38,10 +40,28 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
   }
 
   void _onRestaurantCardTap(int restoId) {
+    final restaurant = restaurants.firstWhere(
+      (r) => r['id'] == restoId,
+      orElse: () => <String, dynamic>{},
+    );
+
+    if (restaurant.isNotEmpty) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => MenuScreen(restoId: restoId),
+        ),
+      );
+    } else {
+      // Handle the case where the restaurant data is not found.
+    }
+  }
+
+  void _onInfoIconTap(int restoId) {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => MenuScreen(restoId: restoId),
+        builder: (context) => RestaurantDetailScreen(restoId: restoId),
       ),
     );
   }
@@ -64,73 +84,64 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
                 borderRadius: BorderRadius.circular(15.0),
               ),
               elevation: 4.0,
-              child: Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(15.0),
-                ),
-                child: Stack(
-                  children: <Widget>[
-                    Container(
-                      height: 200.0,
-                      decoration: BoxDecoration(
-                        image: DecorationImage(
-                          image: NetworkImage('https://menu.scoopup.app' +
-                              restaurant['coverm']),
-                          fit: BoxFit.cover,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Stack(
+                    alignment: Alignment.topRight,
+                    children: [
+                      ClipRRect(
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(15.0),
+                          topRight: Radius.circular(15.0),
                         ),
-                      ),
-                    ),
-                    Align(
-                      alignment: Alignment.topLeft,
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Image.network(
-                          restaurant['logom'],
-                          width: 50.0,
-                          height: 50.0,
-                        ),
-                      ),
-                    ),
-                    Align(
-                      alignment: Alignment.bottomLeft,
-                      child: Container(
-                        padding: EdgeInsets.all(16.0),
-                        width: double.infinity,
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            begin: Alignment.bottomCenter,
-                            end: Alignment.topCenter,
-                            colors: [
-                              Colors.black.withOpacity(0.8),
-                              Colors.transparent,
-                            ],
+                        child: Container(
+                          height: 200.0,
+                          decoration: BoxDecoration(
+                            image: DecorationImage(
+                              image: NetworkImage(
+                                '$baseUrl' + (restaurant['coverm'] ?? ''),
+                              ),
+                              fit: BoxFit.cover,
+                            ),
                           ),
                         ),
-                        child: Column(
+                      ),
+                      IconButton(
+                        icon: Icon(Icons.info, color: Colors.white),
+                        onPressed: () => _onInfoIconTap(restaurant['id']),
+                      ),
+                    ],
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                      children: [
+                        ClipOval(
+                          child: Image.network(
+                            '$baseUrl' + (restaurant['logom'] ?? ''),
+                            width: 50.0,
+                            height: 50.0,
+                          ),
+                        ),
+                        SizedBox(width: 8.0),
+                        Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisSize: MainAxisSize.min,
-                          children: <Widget>[
+                          children: [
                             Text(
-                              restaurant['name'],
+                              restaurant['name'] ?? 'N/A',
                               style: TextStyle(
-                                fontSize: 24.0,
-                                color: Colors.white,
+                                fontSize: 20.0,
+                                color: Colors.black,
                                 fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            Text(
-                              restaurant['description'],
-                              style: TextStyle(
-                                fontSize: 14.0,
-                                color: Colors.white,
                               ),
                             ),
                           ],
                         ),
-                      ),
+                      ],
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
           );
