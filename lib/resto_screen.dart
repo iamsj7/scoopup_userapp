@@ -71,6 +71,13 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Restaurants'),
+        leading: IconButton(
+          // Add leading IconButton
+          icon: Icon(Icons.arrow_back), // Use the back arrow icon
+          onPressed: () {
+            Navigator.pop(context); // This pops the current route and goes back
+          },
+        ),
       ),
       body: ListView.builder(
         itemCount: restaurants.length,

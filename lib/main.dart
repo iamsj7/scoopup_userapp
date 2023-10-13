@@ -19,7 +19,7 @@ class _MyAppState extends State<MyApp> {
   final List<Widget> _screens = [
     HomeScreen(),
     CityScreen(),
-    OrderScreen(), // Pass authToken
+    OrderScreen(), // Use your AccountScreen here
   ];
 
   String? authToken; // Store the login token
@@ -38,8 +38,6 @@ class _MyAppState extends State<MyApp> {
     if (token != null) {
       setState(() {
         authToken = token;
-        userName = prefs.getString('userName');
-        userEmail = prefs.getString('userEmail');
       });
     }
   }
@@ -81,6 +79,9 @@ class _MyAppState extends State<MyApp> {
       ),
       home: authToken != null
           ? Scaffold(
+              appBar: AppBar(
+                title: Text('Welcome $userName'), // Show username here
+              ),
               drawer: Drawer(
                 child: ListView(
                   padding: EdgeInsets.zero,
@@ -104,11 +105,11 @@ class _MyAppState extends State<MyApp> {
                     label: 'Home',
                   ),
                   BottomNavigationBarItem(
-                    icon: Icon(Icons.star),
+                    icon: Icon(Icons.location_city),
                     label: 'City',
                   ),
                   BottomNavigationBarItem(
-                    icon: Icon(Icons.star),
+                    icon: Icon(Icons.delivery_dining),
                     label: 'Orders',
                   ),
                 ],

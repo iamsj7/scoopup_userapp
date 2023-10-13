@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-
 import 'package:scoopup_userapp/resto_screen.dart';
 
 class CityScreen extends StatefulWidget {
@@ -11,6 +10,8 @@ class CityScreen extends StatefulWidget {
 
 class _CityScreenState extends State<CityScreen> {
   List<Map<String, dynamic>> cities = [];
+  final GlobalKey<ScaffoldState> _scaffoldKey =
+      GlobalKey<ScaffoldState>(); // Add GlobalKey
 
   @override
   void initState() {
@@ -26,9 +27,12 @@ class _CityScreenState extends State<CityScreen> {
     if (response.statusCode == 200) {
       final Map<String, dynamic> data = json.decode(response.body);
       if (data.containsKey('data')) {
-        setState(() {
-          cities = List<Map<String, dynamic>>.from(data['data']);
-        });
+        if (_scaffoldKey.currentState?.mounted == true) {
+          // Check if the scaffold is still mounted
+          setState(() {
+            cities = List<Map<String, dynamic>>.from(data['data']);
+          });
+        }
       }
     }
   }
@@ -45,9 +49,7 @@ class _CityScreenState extends State<CityScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Cities'),
-      ),
+      key: _scaffoldKey, // Assign the key to the scaffold
       body: ListView.builder(
         itemCount: cities.length,
         itemBuilder: (BuildContext context, int index) {
