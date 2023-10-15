@@ -28,7 +28,6 @@ class _CityScreenState extends State<CityScreen> {
       final Map<String, dynamic> data = json.decode(response.body);
       if (data.containsKey('data')) {
         if (_scaffoldKey.currentState?.mounted == true) {
-          // Check if the scaffold is still mounted
           setState(() {
             cities = List<Map<String, dynamic>>.from(data['data']);
           });
@@ -49,43 +48,55 @@ class _CityScreenState extends State<CityScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      key: _scaffoldKey, // Assign the key to the scaffold
+      key: _scaffoldKey,
+      appBar: AppBar(
+        title: Text('Cities'),
+      ),
       body: ListView.builder(
         itemCount: cities.length,
         itemBuilder: (BuildContext context, int index) {
           final city = cities[index];
+          final imageUrl = city['logo'] as String?;
           return GestureDetector(
             onTap: () => _onCityCardTap(city['id']),
             child: Card(
               elevation: 4.0,
+              margin: EdgeInsets.all(16.0),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(15.0),
               ),
-              margin: EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  ClipRRect(
-                    borderRadius:
-                        BorderRadius.vertical(top: Radius.circular(15.0)),
-                    child: Ink.image(
-                      height: 200.0,
-                      image: NetworkImage(city['image']),
-                      fit: BoxFit.cover,
-                    ),
+              child: ClipPath(
+                clipper: MyCustomClipper(), // Use custom clipper
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.black.withOpacity(0.4),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Text(
-                      city['name'],
-                      style: TextStyle(
-                        fontSize: 24.0,
-                        color: Colors.black,
-                        fontWeight: FontWeight.bold,
+                  child: Stack(
+                    children: <Widget>[
+                      if (imageUrl != null)
+                        ClipRRect(
+                          borderRadius:
+                              BorderRadius.vertical(top: Radius.circular(15.0)),
+                          child: Image.network(
+                            imageUrl,
+                            width: double.infinity,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Text(
+                          city['name'],
+                          style: TextStyle(
+                            fontSize: 24.0,
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                       ),
-                    ),
+                    ],
                   ),
-                ],
+                ),
               ),
             ),
           );
@@ -93,4 +104,26 @@ class _CityScreenState extends State<CityScreen> {
       ),
     );
   }
+}
+
+class MyCustomClipper extends CustomClipper<Path> {
+  @override
+  Path getClip(Size size) {
+    final path = Path();
+    final radius = 15.0;
+    path.moveTo(0, size.height - radius);
+    path.lineTo(0, radius);
+    path.quadraticBezierTo(0, 0, radius, 0);
+    path.lineTo(size.width - radius, 0);
+    path.quadraticBezierTo(size.width, 0, size.width, radius);
+    path.lineTo(size.width, size.height - radius);
+    path.quadraticBezierTo(
+        size.width, size.height, size.width - radius, size.height);
+    path.lineTo(radius, size.height);
+    path.quadraticBezierTo(0, size.height, 0, size.height - radius);
+    return path;
+  }
+
+  @override
+  bool shouldReclip(CustomClipper<Path> oldClipper) => false;
 }

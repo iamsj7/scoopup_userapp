@@ -79,9 +79,6 @@ class _MyAppState extends State<MyApp> {
       ),
       home: authToken != null
           ? Scaffold(
-              appBar: AppBar(
-                title: Text('Welcome $userName'), // Show username here
-              ),
               drawer: Drawer(
                 child: ListView(
                   padding: EdgeInsets.zero,

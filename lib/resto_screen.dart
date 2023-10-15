@@ -72,10 +72,9 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
       appBar: AppBar(
         title: Text('Restaurants'),
         leading: IconButton(
-          // Add leading IconButton
-          icon: Icon(Icons.arrow_back), // Use the back arrow icon
+          icon: Icon(Icons.arrow_back),
           onPressed: () {
-            Navigator.pop(context); // This pops the current route and goes back
+            Navigator.pop(context);
           },
         ),
       ),
@@ -132,18 +131,20 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
                           ),
                         ),
                         SizedBox(width: 8.0),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              restaurant['name'] ?? 'N/A',
-                              style: TextStyle(
-                                fontSize: 20.0,
-                                color: Colors.black,
-                                fontWeight: FontWeight.bold,
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                restaurant['name'] ?? 'N/A',
+                                style: TextStyle(
+                                  fontSize: 20.0,
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ],
                     ),
