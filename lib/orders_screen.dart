@@ -103,7 +103,15 @@ class _OrderScreenState extends State<OrderScreen> {
                 itemBuilder: (context, index) {
                   final order = orders[index];
                   final restaurant = order['restorant'];
-                  final lastStatus = order['last_status'][0]['name'];
+                  String lastStatus;
+
+                  if (order['last_status'] != null &&
+                      order['last_status'].isNotEmpty) {
+                    lastStatus = order['last_status'][0]['name'];
+                  } else {
+                    lastStatus = 'Status Not Available';
+                  }
+
                   final createdAt =
                       DateTime.parse(order['created_at']).toLocal();
                   final formattedDate =
@@ -121,12 +129,15 @@ class _OrderScreenState extends State<OrderScreen> {
                         children: [
                           Text(restaurant['name']),
                           SizedBox(width: 8),
-                          Text(
-                            lastStatus,
-                            style: TextStyle(
-                              color: lastStatus == 'Delivered'
-                                  ? Colors.green
-                                  : Colors.red,
+                          Expanded(
+                            child: Text(
+                              lastStatus,
+                              style: TextStyle(
+                                overflow: TextOverflow.ellipsis,
+                                color: lastStatus == 'Delivered'
+                                    ? Colors.green
+                                    : Colors.red,
+                              ),
                             ),
                           ),
                         ],
