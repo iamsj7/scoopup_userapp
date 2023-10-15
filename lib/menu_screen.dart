@@ -133,14 +133,18 @@ class _MenuScreenState extends State<MenuScreen> {
   }
 
   void _addItemToCart(
-      Map<String, dynamic> menuItem,
-      Map<String, dynamic>? selectedVariant,
-      List<Map<String, dynamic>> selectedExtras) {
+    Map<String, dynamic> menuItem,
+    Map<String, dynamic>? selectedVariant,
+    List<Map<String, dynamic>> selectedExtras,
+  ) {
     final int itemId = menuItem['id'];
-    final double itemPrice = menuItem['price'];
+    final double itemPrice =
+        selectedVariant != null ? selectedVariant['price'] : menuItem['price'];
+    final String itemName = menuItem['name'];
 
     Map<String, dynamic> cartItem = {
       'id': itemId,
+      'name': itemName,
       'quantity': 1,
       'price': itemPrice,
       'variant': selectedVariant,
@@ -183,6 +187,9 @@ class _MenuScreenState extends State<MenuScreen> {
                     builder: (context) => CartScreen(
                       restoId: widget.restoId,
                       cartItems: cartItems,
+                      onRemoveItem: (int index) {
+                        // You can implement item removal logic here
+                      },
                     ),
                   ),
                 );
