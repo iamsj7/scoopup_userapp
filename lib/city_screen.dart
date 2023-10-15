@@ -52,53 +52,61 @@ class _CityScreenState extends State<CityScreen> {
       appBar: AppBar(
         title: Text('Cities'),
       ),
-      body: ListView.builder(
-        itemCount: cities.length,
-        itemBuilder: (BuildContext context, int index) {
-          final city = cities[index];
-          final imageUrl = city['logo'] as String?;
-          return GestureDetector(
-            onTap: () => _onCityCardTap(city['id']),
-            child: Card(
-              elevation: 4.0,
-              margin: EdgeInsets.all(16.0),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(15.0),
-              ),
-              child: ClipPath(
-                clipper: MyCustomClipper(), // Use custom clipper
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Colors.black.withOpacity(0.4),
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          final isMobile =
+              constraints.maxWidth <= 768; // Define your breakpoint
+
+          return ListView.builder(
+            itemCount: cities.length,
+            itemBuilder: (BuildContext context, int index) {
+              final city = cities[index];
+              final imageUrl = city['logo'] as String?;
+              return GestureDetector(
+                onTap: () => _onCityCardTap(city['id']),
+                child: Card(
+                  elevation: 4.0,
+                  margin: EdgeInsets.all(16.0),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(15.0),
                   ),
-                  child: Stack(
-                    children: <Widget>[
-                      if (imageUrl != null)
-                        ClipRRect(
-                          borderRadius:
-                              BorderRadius.vertical(top: Radius.circular(15.0)),
-                          child: Image.network(
-                            imageUrl,
-                            width: double.infinity,
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                      Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Text(
-                          city['name'],
-                          style: TextStyle(
-                            fontSize: 24.0,
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
+                  child: ClipPath(
+                    clipper: MyCustomClipper(), // Use custom clipper
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.black.withOpacity(0.4),
                       ),
-                    ],
+                      height: isMobile ? 200.0 : 400.0, // Adjust the height
+                      child: Stack(
+                        children: <Widget>[
+                          if (imageUrl != null)
+                            ClipRRect(
+                              borderRadius: BorderRadius.vertical(
+                                  top: Radius.circular(15.0)),
+                              child: Image.network(
+                                imageUrl,
+                                width: double.infinity,
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                          Padding(
+                            padding: const EdgeInsets.all(16.0),
+                            child: Text(
+                              city['name'],
+                              style: TextStyle(
+                                fontSize: 24.0,
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
                 ),
-              ),
-            ),
+              );
+            },
           );
         },
       ),
