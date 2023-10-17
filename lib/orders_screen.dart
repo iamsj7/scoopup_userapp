@@ -79,6 +79,7 @@ class _OrderScreenState extends State<OrderScreen> {
             onPressed: _refreshUserOrders,
           ),
         ],
+        backgroundColor: Color(0xFFCE4141), // Brand color
       ),
       body: RefreshIndicator(
         onRefresh: _refreshUserOrders,

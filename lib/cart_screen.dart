@@ -49,7 +49,7 @@ class _CartScreenState extends State<CartScreen> {
               subtitle: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Price: OMR ${itemPrice.toStringAsFixed(2)}'),
+                  Text('Price: OMR ${itemPrice.toStringAsFixed(3)}'),
                   Text('Variant: $variantName'),
                   if (extrasSelected.isNotEmpty)
                     Text('Extras: ${_getSelectedExtras(extrasSelected)}'),
@@ -77,18 +77,20 @@ class _CartScreenState extends State<CartScreen> {
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(
-              'Total Price: OMR ${_calculateTotalPrice()}',
+              'Total Price: OMR ${_calculateTotalPrice().toStringAsFixed(3)}',
               style: TextStyle(
                 fontSize: 18.0,
                 fontWeight: FontWeight.bold,
               ),
             ),
+            SizedBox(height: 16.0),
             ElevatedButton(
               onPressed: () {
                 _placeOrder();
               },
               child: Text('Place Order'),
             ),
+            SizedBox(height: 8.0),
             ElevatedButton(
               onPressed: () {
                 _clearCart();
@@ -159,7 +161,7 @@ class _CartScreenState extends State<CartScreen> {
       final response = await http.post(
         Uri.parse(apiUrl),
         headers: {
-          'Accept': 'application/json',
+          'Accept': 'application.json',
           'Content-Type': 'application/json',
         },
         body: jsonEncode(orderData),

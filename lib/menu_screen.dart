@@ -252,12 +252,6 @@ class _MenuScreenState extends State<MenuScreen> {
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
-                                Text(
-                                  menuItem['description'],
-                                  style: TextStyle(
-                                    fontSize: 16.0,
-                                  ),
-                                ),
                                 SizedBox(height: 10.0),
                                 Text(
                                   'OMR ${menuItem['price']}',
