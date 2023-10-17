@@ -21,83 +21,130 @@ class CartScreen extends StatefulWidget {
 }
 
 class _CartScreenState extends State<CartScreen> {
+  String _selectedDeliveryType = 'pickup';
+
+  TextEditingController addressIdController = TextEditingController();
+  TextEditingController commentController = TextEditingController();
+  TextEditingController deliveryAreaNameController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('Cart'),
       ),
-      body: ListView.builder(
-        itemCount: widget.cartItems.length,
-        itemBuilder: (context, index) {
-          final cartItem = widget.cartItems[index];
-          final itemName = cartItem['name'] ?? 'Item Name Not Available';
-          final itemPrice = cartItem['price'];
-          final variantName = cartItem['variant'] != null
-              ? cartItem['variant']['options']
-              : 'No Variant';
-          final extrasSelected = cartItem['extrasSelected'];
+      body: Column(
+        children: <Widget>[
+          DropdownButton<String>(
+            value: _selectedDeliveryType,
+            onChanged: (String? newValue) {
+              setState(() {
+                _selectedDeliveryType = newValue!;
+              });
+            },
+            items: <String>['pickup', 'delivery']
+                .map<DropdownMenuItem<String>>((String value) {
+              return DropdownMenuItem<String>(
+                value: value,
+                child: Text(value),
+              );
+            }).toList(),
+          ),
+          if (_selectedDeliveryType == 'delivery')
+            Column(
+              children: <Widget>[
+                TextField(
+                  controller: addressIdController,
+                  decoration: InputDecoration(labelText: 'Address ID'),
+                ),
+                TextField(
+                  controller: commentController,
+                  decoration: InputDecoration(labelText: 'Comment'),
+                ),
+                TextField(
+                  controller: deliveryAreaNameController,
+                  decoration: InputDecoration(labelText: 'Delivery Area Name'),
+                ),
+              ],
+            ),
+          Expanded(
+            child: ListView.builder(
+              itemCount: widget.cartItems.length,
+              itemBuilder: (context, index) {
+                final cartItem = widget.cartItems[index];
+                final itemName = cartItem['name'] ?? 'Item Name Not Available';
+                final itemPrice = cartItem['price'];
+                final variantName = cartItem['variant'] != null
+                    ? cartItem['variant']['options']
+                    : 'No Variant';
+                final extrasSelected = cartItem['extrasSelected'];
 
-          return Card(
-            margin: EdgeInsets.all(16.0),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(15.0),
-            ),
-            elevation: 4.0,
-            child: ListTile(
-              title: Text(itemName),
-              subtitle: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('Price: OMR ${itemPrice.toStringAsFixed(3)}'),
-                  Text('Variant: $variantName'),
-                  if (extrasSelected.isNotEmpty)
-                    Text('Extras: ${_getSelectedExtras(extrasSelected)}'),
-                ],
-              ),
-              trailing: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text('Qty: ${cartItem['quantity']}'),
-                  IconButton(
-                    icon: Icon(Icons.remove),
-                    onPressed: () {
-                      _removeItem(index);
-                    },
+                return Card(
+                  margin: EdgeInsets.all(16.0),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(15.0),
                   ),
-                ],
-              ),
+                  elevation: 4.0,
+                  child: ListTile(
+                    title: Text(itemName),
+                    subtitle: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('Price: OMR ${itemPrice.toStringAsFixed(3)}'),
+                        Text('Variant: $variantName'),
+                        if (extrasSelected.isNotEmpty)
+                          Text('Extras: ${_getSelectedExtras(extrasSelected)}'),
+                      ],
+                    ),
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text('Qty: ${cartItem['quantity']}'),
+                        IconButton(
+                          icon: Icon(Icons.remove),
+                          onPressed: () {
+                            _removeItem(index);
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              },
             ),
-          );
-        },
-      ),
-      bottomNavigationBar: Container(
-        padding: EdgeInsets.all(16.0),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
+          ),
+          Padding(
+            padding: EdgeInsets.all(16.0),
+            child: Text(
               'Total Price: OMR ${_calculateTotalPrice().toStringAsFixed(3)}',
               style: TextStyle(
                 fontSize: 18.0,
                 fontWeight: FontWeight.bold,
               ),
             ),
-            SizedBox(height: 16.0),
-            ElevatedButton(
-              onPressed: () {
-                _placeOrder();
-              },
-              child: Text('Place Order'),
-            ),
-            SizedBox(height: 8.0),
-            ElevatedButton(
-              onPressed: () {
-                _clearCart();
-              },
-              child: Text('Clear Cart'),
-            ),
-          ],
+          ),
+        ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          _clearCart();
+        },
+        child: Icon(Icons.delete),
+      ),
+      bottomNavigationBar: BottomAppBar(
+        child: Padding(
+          padding: EdgeInsets.all(16.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              ElevatedButton(
+                onPressed: () {
+                  _placeOrder();
+                },
+                child: Text('Place Order'),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -145,14 +192,20 @@ class _CartScreenState extends State<CartScreen> {
     }).toList();
     final Map<String, dynamic> orderData = {
       "vendor_id": widget.restoId,
-      "delivery_method": "pickup",
+      "delivery_method": _selectedDeliveryType,
       "payment_method": "cod",
-      "address_id": 1,
       "items": items,
-      "comment": "",
       "timeslot": "1320_1350",
       "stripe_token": null,
     };
+
+    if (_selectedDeliveryType == 'delivery') {
+      orderData['address_id'] = addressIdController.text;
+      orderData['comment'] = commentController.text;
+      orderData['customFields'] = {
+        "delivery_area_name": deliveryAreaNameController.text,
+      };
+    }
 
     final String apiUrl =
         'https://menu.scoopup.app/api/v2/client/orders?api_token=$apiToken';
@@ -168,14 +221,11 @@ class _CartScreenState extends State<CartScreen> {
       );
 
       if (response.statusCode == 200) {
-        // Process a successful order placement response here
         _showOrderSuccessMessage();
       } else {
-        // Handle API error
         print('API Error: ${response.statusCode} - ${response.body}');
       }
     } catch (e) {
-      // Handle other exceptions, such as network issues
       print('Network Error: $e');
     }
   }
@@ -190,8 +240,14 @@ class _CartScreenState extends State<CartScreen> {
           actions: [
             TextButton(
               onPressed: () {
+                // Close the order success dialog
                 Navigator.of(context).pop();
-                _clearCart(); // Clear the cart after a successful order
+
+                // Clear the cart
+                _clearCart();
+
+                // Navigate back to the menu screen
+                Navigator.of(context).pop();
               },
               child: Text('OK'),
             ),

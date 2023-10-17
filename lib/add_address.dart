@@ -32,32 +32,51 @@ class _AddAddressScreenState extends State<AddAddressScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              Text('Selected Location:'),
-              Text('Latitude: ${_selectedLocation.latitude}'),
-              Text('Longitude: ${_selectedLocation.longitude}'),
+              Text(
+                'Selected Location:',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              ),
+              Text(
+                  'Latitude: ${_selectedLocation.latitude.toStringAsFixed(5)}'),
+              Text(
+                  'Longitude: ${_selectedLocation.longitude.toStringAsFixed(5)}'),
               SizedBox(height: 16),
-              TextField(
+              _buildInputField(
                 controller: _addressController,
-                decoration: InputDecoration(labelText: 'Address'),
+                label: 'Address',
+                icon: Icons.location_on,
               ),
-              TextField(
+              _buildInputField(
                 controller: _apartmentController,
-                decoration: InputDecoration(labelText: 'Apartment'),
+                label: 'Apartment',
+                icon: Icons.apartment,
               ),
-              TextField(
+              _buildInputField(
                 controller: _intercomController,
-                decoration: InputDecoration(labelText: 'Intercom'),
+                label: 'Intercom',
+                icon: Icons.call,
               ),
-              TextField(
+              _buildInputField(
                 controller: _floorController,
-                decoration: InputDecoration(labelText: 'Floor'),
+                label: 'Floor',
+                icon: Icons.layers,
               ),
-              TextField(
+              _buildInputField(
                 controller: _entryController,
-                decoration: InputDecoration(labelText: 'Entry'),
+                label: 'Entry',
+                icon: Icons.exit_to_app,
               ),
               SizedBox(height: 16),
-              Text('Map:'),
+              Text(
+                'Map:',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              ),
+              Text(
+                'Hint: Tap on the map to place a marker at the exact location.',
+                style: TextStyle(
+                  color: Colors.grey, // Use a suitable text color
+                ),
+              ),
               Container(
                 height: 400,
                 child: GoogleMap(
@@ -96,6 +115,32 @@ class _AddAddressScreenState extends State<AddAddressScreen> {
     );
   }
 
+  Widget _buildInputField({
+    required TextEditingController controller,
+    required String label,
+    required IconData icon,
+  }) {
+    return Container(
+      margin: EdgeInsets.only(bottom: 16),
+      padding: EdgeInsets.all(8),
+      decoration: BoxDecoration(
+        border: Border.all(
+          color: Colors.blue, // Use your branding color here
+        ),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: TextField(
+        controller: controller,
+        decoration: InputDecoration(
+          labelText: label,
+          labelStyle: TextStyle(color: Colors.blue), // Label text color
+          icon: Icon(icon, color: Colors.blue), // Icon color
+          border: InputBorder.none,
+        ),
+      ),
+    );
+  }
+
   // Function to save the address
   // Function to save the address
   Future<void> saveAddress() async {
@@ -103,9 +148,22 @@ class _AddAddressScreenState extends State<AddAddressScreen> {
     final double lat = _selectedLocation.latitude;
     final double lng = _selectedLocation.longitude;
     final String apartment = _apartmentController.text;
-    final String intercom = _intercomController.text;
-    final String floor = _floorController.text;
-    final String entry = _entryController.text;
+    final String intercom =
+        _intercomController.text.isEmpty ? "001" : _intercomController.text;
+    final String floor =
+        _floorController.text.isEmpty ? "001" : _floorController.text;
+    final String entry =
+        _entryController.text.isEmpty ? "001" : _entryController.text;
+
+    if (address.isEmpty || apartment.isEmpty || floor.isEmpty) {
+      // Handle empty required fields (e.g., show an error message)
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Address, Apartment, and Floor are required fields.'),
+        ),
+      );
+      return;
+    }
 
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final String? apiToken = prefs.getString('authToken');
