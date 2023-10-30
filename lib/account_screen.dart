@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:scoopup_userapp/about.dart';
+import 'package:scoopup_userapp/gethelp.dart';
 import 'package:scoopup_userapp/myaddress_screen.dart';
 import 'package:scoopup_userapp/offers.dart';
 import 'package:scoopup_userapp/orders_screen.dart';
+import 'package:scoopup_userapp/privacypolicy.dart';
 import 'package:scoopup_userapp/vouchers.dart';
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -123,7 +126,7 @@ class _AccountScreenState extends State<AccountScreen> {
                   _buildAccountListItem('My Address', Icons.location_on),
                   _buildAccountListItem('Offers', Icons.local_offer),
                   _buildAccountListItem('Vouchers', Icons.confirmation_number),
-                  _buildAccountListItem('Get Help', Icons.help_outline),
+                  _buildAccountListItem('Social Media', Icons.help_outline),
                   _buildAccountListItem('Privacy Policy', Icons.lock),
                   _buildAccountListItem('About App', Icons.info),
                 ],
@@ -170,6 +173,18 @@ class _AccountScreenState extends State<AccountScreen> {
         if (title == 'Vouchers') {
           Navigator.push(context,
               MaterialPageRoute(builder: (context) => vouchers()));
+        }
+          if (title == 'Social Media') {
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => GetHelp()));
+        }
+          if (title == 'Privacy Policy') {
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => PrivacyPolicyPage()));
+        }
+          if (title == 'About App') {
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => AboutApp()));
         }
         
         // Add more navigation logic for other items
