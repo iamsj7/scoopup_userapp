@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:scoopup_userapp/resto_screen.dart';
 import 'dart:convert';
 import 'cart_screen.dart';
 
@@ -67,62 +68,73 @@ class _MenuScreenState extends State<MenuScreen> {
         return StatefulBuilder(
           builder: (context, setState) {
             return AlertDialog(
-              title: Text(menuItem['name']),
-              content: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  Text('Description: ${menuItem['description']}'),
-                  Text('Price: OMR ${menuItem['price']}'),
-                  if (menuItem['has_variants'] == 1) ...[
-                    Text('Variants:'),
-                    for (var variant in menuItem['variants'])
-                      RadioListTile(
-                        value: variant,
-                        groupValue: selectedVariant,
-                        onChanged: (value) {
-                          setState(() {
-                            selectedVariant = value;
-                          });
-                        },
-                        title: Text(variant['options']),
-                        subtitle: Text('Price: OMR ${variant['price']}'),
-                      ),
-                  ],
-                  if (menuItem['extras'].isNotEmpty) ...[
-                    Text('Extras:'),
-                    for (var extra in menuItem['extras'])
-                      CheckboxListTile(
-                        value: selectedExtras.contains(extra),
-                        onChanged: (bool? value) {
-                          if (value != null) {
+              title: Text(
+                menuItem['name'],
+                textAlign: TextAlign.center,
+              ),
+              content: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    Text('Description: ${menuItem['description']}'),
+                    Text('Price: OMR ${menuItem['price']}'),
+                    if (menuItem['has_variants'] == 1) ...[
+                      const Text('Variants:'),
+                      for (var variant in menuItem['variants'])
+                        RadioListTile(
+                          value: variant,
+                          groupValue: selectedVariant,
+                          onChanged: (value) {
                             setState(() {
-                              if (value) {
-                                selectedExtras.add(extra);
-                              } else {
-                                selectedExtras.remove(extra);
-                              }
+                              selectedVariant = value;
                             });
-                          }
-                        },
-                        title: Text(extra['name']),
-                        subtitle: Text('Price: OMR ${extra['price']}'),
-                      ),
+                          },
+                          title: Text(variant['options']),
+                          subtitle: Text('Price: OMR ${variant['price']}'),
+                        ),
+                    ],
+                    if (menuItem['extras'].isNotEmpty) ...[
+                      const Text('Extras:'),
+                      for (var extra in menuItem['extras'])
+                        CheckboxListTile(
+                          value: selectedExtras.contains(extra),
+                          onChanged: (bool? value) {
+                            if (value != null) {
+                              setState(() {
+                                if (value) {
+                                  selectedExtras.add(extra);
+                                } else {
+                                  selectedExtras.remove(extra);
+                                }
+                              });
+                            }
+                          },
+                          title: Text(extra['name']),
+                          subtitle: Text('Price: OMR ${extra['price']}'),
+                        ),
+                    ],
                   ],
-                ],
+                ),
               ),
               actions: <Widget>[
                 TextButton(
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
-                  child: Text('Cancel'),
+                  child: const Text(
+                    'Cancel',
+                    style: TextStyle(color: Colors.red),
+                  ),
                 ),
                 TextButton(
                   onPressed: () {
                     _addItemToCart(menuItem, selectedVariant, selectedExtras);
                     Navigator.of(context).pop();
                   },
-                  child: Text('Add to Cart'),
+                  child: const Text(
+                    'Add to Cart',
+                    style: TextStyle(color: Colors.red),
+                  ),
                 ),
               ],
             );
@@ -179,12 +191,37 @@ class _MenuScreenState extends State<MenuScreen> {
       length: categories.length,
       child: Scaffold(
         appBar: AppBar(
-          title: Text('Menu'),
+          backgroundColor: Colors.transparent,
+          elevation: 0.0,
+          iconTheme: const IconThemeData(color: Color(0xFFCE4141)),
+          title: const Center(
+            child: Text(
+              
+              'Resturant',
+              style: TextStyle(
+                color: Color(0xFFCE4141),
+                fontSize: 24,
+                fontFamily: "Nunito Sans",
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
           bottom: categories.isNotEmpty
               ? TabBar(
+                  labelColor: Colors.red,
+                  indicatorColor: Colors.red,
                   isScrollable: true,
                   tabs: categories.map((category) {
                     return Container(
+//                       decoration: ShapeDecoration(
+
+// color: Colors.transparent,
+// shape: RoundedRectangleBorder(
+// side: BorderSide(width: 1, color: Color(0xFFF97077)),
+// borderRadius: BorderRadius.circular(10),
+// ),
+// ),
+
                       width: 100,
                       child: Tab(text: category),
                     );
@@ -194,7 +231,7 @@ class _MenuScreenState extends State<MenuScreen> {
           actions: [
             // Add a cart icon that navigates to the CartScreen
             IconButton(
-              icon: Icon(Icons.shopping_cart),
+              icon: const Icon(Icons.shopping_cart),
               onPressed: () {
                 Navigator.push(
                   context,
@@ -220,23 +257,36 @@ class _MenuScreenState extends State<MenuScreen> {
                 final imageUrl = '$baseUrl${menuItem['logom']}';
 
                 return Card(
-                  margin: EdgeInsets.all(16.0),
+                  margin: const EdgeInsets.all(9.0),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(15.0),
                   ),
-                  elevation: 4.0,
+                  elevation: 5.0,
                   child: InkWell(
                     onTap: () {
                       _onMenuItemSelected(menuItem);
                     },
                     child: Row(
                       children: [
-                        Container(
-                          width: 200,
-                          child: Image.network(
-                            imageUrl,
-                            height: 200.0,
-                            fit: BoxFit.cover,
+                        Padding(
+                          padding: const EdgeInsets.only(
+                              top: 17, bottom: 17, left: 17),
+                          child: Container(
+                            
+                            decoration: BoxDecoration(
+                               borderRadius: BorderRadius.circular(15.0),
+                              color: Colors.black,
+                            
+                            ),
+                            width: 150,
+                            child: ClipRRect(
+                                borderRadius: BorderRadius.circular(15.0),
+                              child: Image.network(
+                                imageUrl,
+                                height: 130,
+                               fit: BoxFit.cover,
+                              ),
+                            ),
                           ),
                         ),
                         Expanded(
@@ -247,18 +297,18 @@ class _MenuScreenState extends State<MenuScreen> {
                               children: <Widget>[
                                 Text(
                                   menuItem['name'],
-                                  style: TextStyle(
-                                    fontSize: 24.0,
+                                  style: const TextStyle(
+                                    fontSize: 18.0,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
-                                SizedBox(height: 10.0),
+                                const SizedBox(height: 10.0),
                                 Text(
                                   'OMR ${menuItem['price']}',
-                                  style: TextStyle(
-                                    fontSize: 18.0,
+                                  style: const TextStyle(
+                                    fontSize: 16.0,
                                     fontWeight: FontWeight.bold,
-                                    color: Colors.blue,
+                                    color: Colors.red,
                                   ),
                                 ),
                               ],

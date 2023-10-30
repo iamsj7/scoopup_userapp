@@ -25,6 +25,7 @@ class _AddAddressScreenState extends State<AddAddressScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Add Address'),
+         backgroundColor: Color(0xFFCE4141),
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -111,6 +112,7 @@ class _AddAddressScreenState extends State<AddAddressScreen> {
           saveAddress();
         },
         child: Icon(Icons.save),
+        backgroundColor: Colors.red,
       ),
     );
   }
@@ -125,7 +127,7 @@ class _AddAddressScreenState extends State<AddAddressScreen> {
       padding: EdgeInsets.all(8),
       decoration: BoxDecoration(
         border: Border.all(
-          color: Colors.blue, // Use your branding color here
+          color: Colors.red, // Use your branding color here
         ),
         borderRadius: BorderRadius.circular(8),
       ),
@@ -133,8 +135,8 @@ class _AddAddressScreenState extends State<AddAddressScreen> {
         controller: controller,
         decoration: InputDecoration(
           labelText: label,
-          labelStyle: TextStyle(color: Colors.blue), // Label text color
-          icon: Icon(icon, color: Colors.blue), // Icon color
+          labelStyle: TextStyle(color: Colors.red), // Label text color
+          icon: Icon(icon, color: Colors.red), // Icon color
           border: InputBorder.none,
         ),
       ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:scoopup_userapp/city_screen.dart';
 import 'dart:convert';
 
 import 'package:scoopup_userapp/restaurant_detail_screen.dart';
@@ -15,6 +16,8 @@ class RestaurantScreen extends StatefulWidget {
 }
 
 class _RestaurantScreenState extends State<RestaurantScreen> {
+    var size, height, width;
+
   List<Map<String, dynamic>> restaurants = [];
   final String baseUrl = 'https://menu.scoopup.app';
 
@@ -68,15 +71,40 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
 
   @override
   Widget build(BuildContext context) {
+     size = MediaQuery.of(context).size;
+    height = size.height;
+    width = size.width;
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Restaurants'),
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back),
+      appBar:  AppBar(
+         leading: IconButton(
+          icon: Icon(Icons.arrow_back_ios_new),
           onPressed: () {
-            Navigator.pop(context);
+           Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                 CityScreen()));
           },
         ),
+          backgroundColor: Colors.transparent,
+          elevation: 0.0,
+          iconTheme: IconThemeData(color: Color(0xFFCE4141)),
+          title: Row(
+            children: [
+              SizedBox(width: width/4.5),
+              const Text(
+                'Resturant',
+                style: TextStyle(
+                  color: Color(0xFFCE4141),
+                  fontSize: 24,
+                  fontFamily: "Nunito Sans",
+                  fontWeight: FontWeight.w600,
+                  
+                ),
+              ),
+            ],
+          ),
+         
       ),
       body: ListView.builder(
         itemCount: restaurants.length,
@@ -100,55 +128,75 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
                         borderRadius: BorderRadius.only(
                           topLeft: Radius.circular(15.0),
                           topRight: Radius.circular(15.0),
+                          bottomLeft: Radius.circular(15.0),
+                          bottomRight: Radius.circular(15),
                         ),
+                        
                         child: Container(
                           height: 200.0,
                           decoration: BoxDecoration(
+                          
+                                  
                             image: DecorationImage(
                               image: NetworkImage(
                                 '$baseUrl' + (restaurant['coverm'] ?? ''),
                               ),
+
                               fit: BoxFit.cover,
                             ),
                           ),
+                          
                         ),
+                        
                       ),
-                      IconButton(
-                        icon: Icon(Icons.info, color: Colors.white),
-                        onPressed: () => _onInfoIconTap(restaurant['id']),
+                       
+                      
+                            Container(
+                              child:   Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                             Padding(
+                               padding: const EdgeInsets.only(left:10.0),
+                               child: Container(
+                                width: width / 1.5,
+                                 child: Text(
+                                                      
+                                      restaurant['name'] ?? 'N/A',
+                                      style: TextStyle(
+                                        fontSize: 20.0,
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                        
+                                      ),
+                                      textAlign: TextAlign.left,
+                                    ),
+                               ),
+                             ),
+                          IconButton(
+                          
+                            icon: Icon(Icons.info, color: Colors.white),
+                            onPressed: () => _onInfoIconTap(restaurant['id']),
+                          ),
+                        ],
                       ),
+                              padding:
+                                  const EdgeInsets.fromLTRB(12, 12, 12, 12),
+                              height: 80,
+                              width: 380,
+                              decoration: const BoxDecoration(
+                                borderRadius: BorderRadius.all(Radius.circular(15)),
+                                  gradient: LinearGradient(
+                                      colors: [Colors.black, Colors.black12],
+                                     end: Alignment.bottomCenter,
+                                      begin: Alignment.topCenter)),
+                            ),
+                      
+                    
+                     
                     ],
                   ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Row(
-                      children: [
-                        ClipOval(
-                          child: Image.network(
-                            '$baseUrl' + (restaurant['logom'] ?? ''),
-                            width: 50.0,
-                            height: 50.0,
-                          ),
-                        ),
-                        SizedBox(width: 8.0),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                restaurant['name'] ?? 'N/A',
-                                style: TextStyle(
-                                  fontSize: 20.0,
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+               
+                  
                 ],
               ),
             ),

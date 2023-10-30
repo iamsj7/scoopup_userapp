@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:scoopup_userapp/home_screen.dart';
+import 'package:scoopup_userapp/main.dart';
 import 'dart:convert';
 import 'package:scoopup_userapp/resto_screen.dart';
 
@@ -9,9 +11,11 @@ class CityScreen extends StatefulWidget {
 }
 
 class _CityScreenState extends State<CityScreen> {
+  
   List<Map<String, dynamic>> cities = [];
   final GlobalKey<ScaffoldState> _scaffoldKey =
-      GlobalKey<ScaffoldState>(); // Add GlobalKey
+      GlobalKey<ScaffoldState>(); 
+    var size, height, width;// Add GlobalKey
 
   @override
   void initState() {
@@ -47,10 +51,46 @@ class _CityScreenState extends State<CityScreen> {
 
   @override
   Widget build(BuildContext context) {
+     size = MediaQuery.of(context).size;
+    height = size.height;
+    width = size.width;
     return Scaffold(
+      
       key: _scaffoldKey,
-      appBar: AppBar(
-        title: Text('Cities'),
+      appBar: AppBar(  
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back_ios_new),
+          onPressed: () {
+           Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                  builder: (context) =>
+                 MyApp()));
+          },
+        ),
+        
+          backgroundColor: Colors.transparent,
+          elevation: 0.0,
+          iconTheme: IconThemeData(color: Color(0xFFCE4141)),
+          title: Row(
+                
+            children: [
+              SizedBox(width: width/4),
+              const Text(
+                'Cities',
+                style: TextStyle(
+                  color: Color(0xFFCE4141),
+                  fontSize: 26,
+                  fontFamily: "Nunito Sans",
+                  fontWeight: FontWeight.w600,
+                  
+                ),
+              ),
+          
+            ],
+          ),
+          
+        
       ),
       body: LayoutBuilder(
         builder: (context, constraints) {

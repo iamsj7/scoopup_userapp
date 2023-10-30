@@ -2,6 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:scoopup_userapp/city_screen.dart';
+import 'package:scoopup_userapp/offers.dart';
+import 'package:scoopup_userapp/onboarding.dart';
+import 'package:scoopup_userapp/orders_screen.dart';
+import 'package:scoopup_userapp/vouchers.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -45,63 +50,98 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Home'),
-      ),
       body: SingleChildScrollView(
         child: Column(
+          
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
+            
             bannerData != null
                 ? Container(
                     height: 200.0,
-                    decoration: BoxDecoration(
-                      color: Colors.blueAccent.withOpacity(0.2),
+                    decoration: const BoxDecoration(
+                      color: Color(0x40CE4141),
+                      
                     ),
+                    
                     child: Row(
                       children: <Widget>[
+                        
                         Expanded(
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
-                              Text(
-                                bannerData!['title'],
-                                style: TextStyle(
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white,
+                              Padding(
+                                padding: const EdgeInsets.only(left: 10,bottom: 20),
+                                child: IconButton(
+                                  alignment: Alignment.topLeft,
+                                                  icon: Icon(Icons.menu), 
+                                                  // Icon for the menu
+                                                  onPressed: () {
+                                                    Scaffold.of(context).openDrawer(); 
+                                                     },
+                                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(left: 20),
+                                child: Text(
+                                  bannerData!['title'],
+                                  style: const TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                    color: Color(0xFFCE4141),
+                                  ),
                                 ),
                               ),
-                              ElevatedButton(
-                                onPressed: () {
-                                  // Add button functionality here
-                                },
-                                style: ElevatedButton.styleFrom(
-                                  primary: Colors.blueAccent.withOpacity(0.7),
-                                  onPrimary: Colors.white,
+                              Padding(
+                                padding:
+                                    const EdgeInsets.only(top: 10, left: 20),
+                                child: ElevatedButton(
+                                  onPressed: () {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                CityScreen()));
+                                    // Add button functionality here
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: Colors.white,
+                                    shadowColor: Color(0xFFCE4141),
+                                  ),
+                                  child: const Text(
+                                    'Start Order',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      color: Color(0xFFCE4141),
+                                    ),
+                                  ),
                                 ),
-                                child: Text('Click Me'),
                               ),
                             ],
                           ),
                         ),
                         ConstrainedBox(
-                          constraints: BoxConstraints(
+                          constraints: const BoxConstraints(
                             maxWidth: 200,
                             maxHeight: 200,
                           ),
-                          child: Image.network(
-                            bannerData!['imageURL'],
-                            fit: BoxFit.cover,
+                          child: Padding(
+                            padding: EdgeInsets.only(right: 50),
+                            child: Image.network(
+                              bannerData!['imageURL'],
+                              fit: BoxFit.fill,
+                              height: 120,
+                            ),
                           ),
                         ),
                       ],
                     ),
                   )
-                : CircularProgressIndicator(),
-            Padding(
-              padding: const EdgeInsets.all(16.0),
+                : const CircularProgressIndicator(),
+            const Padding(
+              padding: EdgeInsets.all(16.0),
               child: Text(
                 'Shortcuts',
                 style: TextStyle(
@@ -110,21 +150,45 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
             ),
+            // ignore: sized_box_for_whitespace
             Container(
               height: 120.0,
               child: ListView(
                 scrollDirection: Axis.horizontal,
                 children: [
-                  _buildShortcutCard('Our Picks', Icons.star, Colors.blue),
-                  _buildShortcutCard('Past Order', Icons.history, Colors.green),
                   _buildShortcutCard(
-                      'Offers', Icons.local_offer, Colors.orange),
+                      'Our Picks', Icons.star, Color(0xFFCE4141)),
+                  GestureDetector(
+                      child: _buildShortcutCard(
+                          'Past Order', Icons.history, Color(0xFFCE4141)),
+                      onTap: () => {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => Onboarding()))
+                          }),
+                  GestureDetector(
+                      child: _buildShortcutCard(
+                          'Offers', Icons.local_offer, Color(0xFFCE4141)),
+                      onTap: () => {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => const MyHomePage()))
+                          }),
+                  GestureDetector(
+                      child: _buildShortcutCard(
+                          'Coupons', Icons.local_activity, Color(0xFFCE4141)),
+                      onTap: () => {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => const vouchers()))
+                          }),
                   _buildShortcutCard(
-                      'Coupons', Icons.local_activity, Colors.red),
+                      'Near By', Icons.location_on, Color(0xFFCE4141)),
                   _buildShortcutCard(
-                      'Near By', Icons.location_on, Colors.purple),
-                  _buildShortcutCard(
-                      'Your Category', Icons.category, Colors.amber),
+                      'Your Category', Icons.category, Color(0xFFCE4141)),
                 ],
               ),
             ),
@@ -154,7 +218,7 @@ class _HomeScreenState extends State<HomeScreen> {
               size: 36,
             ),
           ),
-          SizedBox(height: 4.0),
+          const SizedBox(height: 4.0),
           Text(
             title,
             textAlign: TextAlign.center,
@@ -168,8 +232,8 @@ class _HomeScreenState extends State<HomeScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Padding(
-          padding: const EdgeInsets.all(16.0),
+        const Padding(
+          padding: EdgeInsets.all(16.0),
           child: Text(
             'Explore Offers',
             style: TextStyle(

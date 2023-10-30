@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:scoopup_userapp/myaddress_screen.dart';
+import 'package:scoopup_userapp/offers.dart';
 import 'package:scoopup_userapp/orders_screen.dart';
+import 'package:scoopup_userapp/vouchers.dart';
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -58,7 +60,10 @@ class _AccountScreenState extends State<AccountScreen> {
           // Display user information in a Material Card with a circular avatar
           Card(
             elevation: 8,
-            color: Color(0xFFCE4141), // Tinted color
+             color: Colors.white,
+      shape: RoundedRectangleBorder(
+        side: BorderSide(color: Colors.red, width: 1),
+        borderRadius: BorderRadius.circular(10)), // Tinted color
             margin: EdgeInsets.all(12),
             child: Padding(
               padding: const EdgeInsets.all(16.0),
@@ -70,7 +75,7 @@ class _AccountScreenState extends State<AccountScreen> {
                     height: 64,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      color: Colors.white,
+                      color: Colors.red,
                     ),
                     child: Center(
                       child: Text(
@@ -78,7 +83,7 @@ class _AccountScreenState extends State<AccountScreen> {
                             ? name[0]
                             : 'A', // Display 'A' if name is empty
                         style: TextStyle(
-                            fontSize: 24, fontWeight: FontWeight.bold),
+                            fontSize: 24, fontWeight: FontWeight.bold,color: Colors.white),
                       ),
                     ),
                   ),
@@ -90,15 +95,15 @@ class _AccountScreenState extends State<AccountScreen> {
                       children: [
                         Text(
                           'Name: $name',
-                          style: TextStyle(fontSize: 18, color: Colors.white),
+                          style: TextStyle(fontSize: 18, color: Colors.black),
                         ),
                         Text(
                           'Email: $email',
-                          style: TextStyle(fontSize: 18, color: Colors.white),
+                          style: TextStyle(fontSize: 18, color: Colors.black),
                         ),
                         Text(
                           'Phone: $phone',
-                          style: TextStyle(fontSize: 18, color: Colors.white),
+                          style: TextStyle(fontSize: 18, color: Colors.black),
                         ),
                       ],
                     ),
@@ -158,6 +163,15 @@ class _AccountScreenState extends State<AccountScreen> {
           Navigator.push(context,
               MaterialPageRoute(builder: (context) => MyAddressScreen()));
         }
+        if (title == 'Offers') {
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => MyHomePage()));
+        }
+        if (title == 'Vouchers') {
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => vouchers()));
+        }
+        
         // Add more navigation logic for other items
       },
     );

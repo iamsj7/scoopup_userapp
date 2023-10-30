@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class CartScreen extends StatefulWidget {
+  var size, width, height;
   final int restoId;
   final List<Map<String, dynamic>> cartItems;
   final Function(int) onRemoveItem;
@@ -29,103 +30,167 @@ class _CartScreenState extends State<CartScreen> {
 
   @override
   Widget build(BuildContext context) {
+    var size = MediaQuery.of(context).size;
+    var width= size.width;
+    var height= size.height;
+    final screenHeight = MediaQuery.of(context).size.height;
     return Scaffold(
+      
       appBar: AppBar(
-        title: Text('Cart'),
-      ),
-      body: Column(
-        children: <Widget>[
-          DropdownButton<String>(
-            value: _selectedDeliveryType,
-            onChanged: (String? newValue) {
-              setState(() {
-                _selectedDeliveryType = newValue!;
-              });
-            },
-            items: <String>['pickup', 'delivery']
-                .map<DropdownMenuItem<String>>((String value) {
-              return DropdownMenuItem<String>(
-                value: value,
-                child: Text(value),
-              );
-            }).toList(),
-          ),
-          if (_selectedDeliveryType == 'delivery')
-            Column(
-              children: <Widget>[
-                TextField(
-                  controller: addressIdController,
-                  decoration: InputDecoration(labelText: 'Address ID'),
-                ),
-                TextField(
-                  controller: commentController,
-                  decoration: InputDecoration(labelText: 'Comment'),
-                ),
-                TextField(
-                  controller: deliveryAreaNameController,
-                  decoration: InputDecoration(labelText: 'Delivery Area Name'),
-                ),
-              ],
-            ),
-          Expanded(
-            child: ListView.builder(
-              itemCount: widget.cartItems.length,
-              itemBuilder: (context, index) {
-                final cartItem = widget.cartItems[index];
-                final itemName = cartItem['name'] ?? 'Item Name Not Available';
-                final itemPrice = cartItem['price'];
-                final variantName = cartItem['variant'] != null
-                    ? cartItem['variant']['options']
-                    : 'No Variant';
-                final extrasSelected = cartItem['extrasSelected'];
-
-                return Card(
-                  margin: EdgeInsets.all(16.0),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(15.0),
-                  ),
-                  elevation: 4.0,
-                  child: ListTile(
-                    title: Text(itemName),
-                    subtitle: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text('Price: OMR ${itemPrice.toStringAsFixed(3)}'),
-                        Text('Variant: $variantName'),
-                        if (extrasSelected.isNotEmpty)
-                          Text('Extras: ${_getSelectedExtras(extrasSelected)}'),
-                      ],
-                    ),
-                    trailing: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text('Qty: ${cartItem['quantity']}'),
-                        IconButton(
-                          icon: Icon(Icons.remove),
-                          onPressed: () {
-                            _removeItem(index);
-                          },
-                        ),
-                      ],
-                    ),
-                  ),
-                );
-              },
-            ),
-          ),
-          Padding(
-            padding: EdgeInsets.all(16.0),
-            child: Text(
-              'Total Price: OMR ${_calculateTotalPrice().toStringAsFixed(3)}',
+        backgroundColor: Colors.transparent,
+          elevation: 0.0,
+          iconTheme: IconThemeData(color: Color(0xFFCE4141)),
+          title: Padding(
+            padding: const EdgeInsets.only(left:100),
+            child: const Text(
+              'Cart',
               style: TextStyle(
-                fontSize: 18.0,
-                fontWeight: FontWeight.bold,
+                color: Color(0xFFCE4141),
+                fontSize: 26,
+                fontFamily: "Nunito Sans",
+                fontWeight: FontWeight.w600,
+                
               ),
             ),
           ),
-        ],
       ),
+      body: 
+       
+        Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: <Widget>[
+            
+            Padding(
+              padding: const EdgeInsets.only(top:30,),
+              child: Row(
+                
+                children: [Padding(
+                  padding: const EdgeInsets.only(left: 20),
+                  child: Text("select type of delivery",
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 16,
+                    fontFamily: "Nunito Sans",
+                    fontWeight: FontWeight.w400,
+                    
+                  ),
+                  ),
+                ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 120),
+                    child: DropdownButton<String>(
+                      borderRadius: BorderRadius.all(Radius.circular(10)),
+                      value: _selectedDeliveryType,
+                      onChanged: (String? newValue) {
+                        setState(() {
+                          _selectedDeliveryType = newValue!;
+                        });
+                      },
+                      items: <String>['pickup', 'delivery']
+                          .map<DropdownMenuItem<String>>((String value) {
+                        return DropdownMenuItem<String>(
+                          value: value,
+                          child: Text(value),
+                        );
+                      }).toList(),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            if (_selectedDeliveryType == 'delivery')
+              Padding(
+                  padding: const EdgeInsets.only(left: 15,top:30),
+                child: Expanded(
+                  child: SingleChildScrollView(
+                    child: Expanded(
+                      child: Column(
+                        children: <Widget>[
+                          
+                            TextField(
+                              controller: addressIdController,
+                              decoration: InputDecoration(labelText: 'Address ID'),
+                            ),
+                          
+                         
+                             TextField(
+                              controller: commentController,
+                              decoration: InputDecoration(labelText: 'Comment'),
+                            
+                          ),
+                          TextField(
+                            controller: deliveryAreaNameController,
+                            decoration: InputDecoration(labelText: 'Delivery Area Name'),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            Expanded(
+              child: ListView.builder(
+                itemCount: widget.cartItems.length,
+                itemBuilder: (context, index) {
+                  final cartItem = widget.cartItems[index];
+                  final itemName = cartItem['name'] ?? 'Item Name Not Available';
+                  final itemPrice = cartItem['price'];
+                  final variantName = cartItem['variant'] != null
+                      ? cartItem['variant']['options']
+                      : 'No Variant';
+                  final extrasSelected = cartItem['extrasSelected'];
+      
+                  return Card(
+                    margin: EdgeInsets.all(16.0),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15.0),
+                    ),
+                    elevation: 4.0,
+                    child: ListTile(
+                      title: Text(itemName),
+                      subtitle: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          
+                          Text('Price: OMR ${itemPrice.toStringAsFixed(3)}'),
+                          Text('Variant: $variantName'),
+                          if (extrasSelected.isNotEmpty)
+                            Text('Extras: ${_getSelectedExtras(extrasSelected)}'),
+                        ],
+                      ),
+                      trailing: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text('Qty: ${cartItem['quantity']}'),
+                          IconButton(
+                            icon: Icon(Icons.remove),
+                            onPressed: () {
+                              _removeItem(index);
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+             Padding(
+               padding: EdgeInsets.only(left: 10,top: 15,),
+               child: 
+              Text(
+                'Total Price: OMR ${_calculateTotalPrice().toStringAsFixed(3)}',
+                style: TextStyle(
+                  fontSize: 18.0,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ],
+        ),
+      
       floatingActionButton: FloatingActionButton(
+        backgroundColor: Colors.red,
         onPressed: () {
           _clearCart();
         },
@@ -133,11 +198,13 @@ class _CartScreenState extends State<CartScreen> {
       ),
       bottomNavigationBar: BottomAppBar(
         child: Padding(
-          padding: EdgeInsets.all(16.0),
+          padding: EdgeInsets.all(8.0),
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+           
             children: [
               ElevatedButton(
+              
+              
                 onPressed: () {
                   _placeOrder();
                 },
@@ -147,6 +214,7 @@ class _CartScreenState extends State<CartScreen> {
           ),
         ),
       ),
+   
     );
   }
 

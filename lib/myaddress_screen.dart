@@ -100,7 +100,22 @@ class _MyAddressScreenState extends State<MyAddressScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('My Addresses'),
+        backgroundColor: Colors.transparent,
+          elevation: 0.0,
+          iconTheme: IconThemeData(color: Color(0xFFCE4141)),
+          title: Padding(
+            padding: const EdgeInsets.only(left:90),
+            child: const Text(
+              'Address',
+              style: TextStyle(
+                color: Color(0xFFCE4141),
+                fontSize: 26,
+                fontFamily: "Nunito Sans",
+                fontWeight: FontWeight.w600,
+                
+              ),
+            ),
+          ),
       ),
       body: RefreshIndicator(
         onRefresh: _refreshAddresses,
@@ -125,34 +140,37 @@ class _MyAddressScreenState extends State<MyAddressScreen> {
                       color: Colors.red,
                       child: Icon(Icons.delete, color: Colors.white),
                     ),
-                    child: Card(
-                      child: Column(
-                        children: [
-                          ListTile(
-                            title: Text('Address: ${address['address']}'),
-                            subtitle:
-                                Text('Apartment: ${address['apartment']}'),
-                          ),
-                          Container(
-                            height:
-                                200, // Set the desired height for the map view
-                            child: GoogleMap(
-                              initialCameraPosition: CameraPosition(
-                                target: LatLng(lat, lng),
-                                zoom: 15.0, // Set the initial zoom level
-                              ),
-                              markers: {
-                                Marker(
-                                  markerId: MarkerId('address_$index'),
-                                  position: LatLng(lat, lng),
-                                  infoWindow: InfoWindow(
-                                    title: 'Address: ${address['address']}',
-                                  ),
-                                ),
-                              },
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Card(
+                        child: Column(
+                          children: [
+                            ListTile(
+                              title: Text('Address: ${address['address']}'),
+                              subtitle:
+                                  Text('Apartment: ${address['apartment']}'),
                             ),
-                          ),
-                        ],
+                            Container(
+                              height:
+                                  200, // Set the desired height for the map view
+                              child: GoogleMap(
+                                initialCameraPosition: CameraPosition(
+                                  target: LatLng(lat, lng),
+                                  zoom: 15.0, // Set the initial zoom level
+                                ),
+                                markers: {
+                                  Marker(
+                                    markerId: MarkerId('address_$index'),
+                                    position: LatLng(lat, lng),
+                                    infoWindow: InfoWindow(
+                                      title: 'Address: ${address['address']}',
+                                    ),
+                                  ),
+                                },
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   );
@@ -160,6 +178,7 @@ class _MyAddressScreenState extends State<MyAddressScreen> {
               ),
       ),
       floatingActionButton: FloatingActionButton(
+        backgroundColor: Colors.red,
         onPressed: () async {
           final result = await Navigator.push(
             context,
