@@ -14,6 +14,7 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  var size, height, width;
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   bool rememberMe = false;
@@ -85,56 +86,183 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    size = MediaQuery.of(context).size;
+    height = size.height;
+    width = size.width;
+    bool isFocused = false;
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Login'),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            TextField(
-              controller: emailController,
-              decoration: InputDecoration(labelText: 'Email'),
+        resizeToAvoidBottomInset: false,
+        body: ListView(children: [
+          Container(
+            height: height / 3.5,
+            width: width,
+            child: Image.asset(
+              'images/log.png',
+              fit: BoxFit.cover,
             ),
-            TextField(
-              controller: passwordController,
-              decoration: InputDecoration(
-                labelText: 'Password',
-                suffixIcon: IconButton(
-                  icon: Icon(
-                    obscureText ? Icons.visibility : Icons.visibility_off,
-                  ),
-                  onPressed: () {
-                    // Toggle password visibility
-                    setState(() {
-                      obscureText = !obscureText;
-                    });
-                  },
-                ),
+          ),
+          // Container(
+          // decoration: const BoxDecoration(
+          //   gradient: LinearGradient(
+          //     begin: Alignment.bottomCenter,
+          //     end: Alignment.topCenter,
+          //     colors: [Color(0xFFFFB6C1), Color.fromARGB(255, 226, 218, 218)],
+          //   ),
+          // ),
+          // child: Padding(
+          //   padding: const EdgeInsets.only(top: 150),
+          Container(
+            width: 428,
+            height: height / 1.4,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.only(
+                topRight: Radius.circular(70),
               ),
-              obscureText: obscureText,
-            ),
-            Row(
-              children: [
-                Checkbox(
-                  value: rememberMe,
-                  onChanged: (value) {
-                    setState(() {
-                      rememberMe = value!;
-                    });
-                  },
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.2),
+                  spreadRadius: 5,
+                  blurRadius: 7,
+                  offset: const Offset(15, 0), // changes position of shadow
                 ),
-                Text('Remember Me'),
               ],
             ),
-            ElevatedButton(
-              onPressed: _login,
-              child: Text('Login'),
+            child: SingleChildScrollView(
+              scrollDirection: Axis.vertical,
+              child: Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(top: 50.0),
+                    child: Text(
+                      'Welcome Back',
+                      style: TextStyle(
+                        color: Color(0xFFCE4141),
+                        fontSize: 24,
+                        fontFamily: 'Nunito',
+                        fontWeight: FontWeight.w600,
+                        height: 0.03,
+                        letterSpacing: -0.02,
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 40),
+                    child: Container(
+                      width: 360,
+                      // height: 60,
+                      decoration: ShapeDecoration(
+                        color: Color(0x3FD9D9D9),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                      child: TextField(
+                        controller: emailController,
+                        decoration: InputDecoration(
+                            focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                    color: Color.fromARGB(61, 72, 72, 72)),
+                                borderRadius: BorderRadius.circular(20)),
+                            labelText: 'Email',
+                            labelStyle: TextStyle(color: Colors.black26),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(20),
+                            )),
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: height / 20,
+                  ),
+                  Container(
+                    width: 360,
+                    // height: 60,
+                    decoration: ShapeDecoration(
+                      color: Color(0x3FD9D9D9),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                    child: TextField(
+                      controller: passwordController,
+                      decoration: InputDecoration(
+                        focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                                color: Color.fromARGB(61, 72, 72, 72)),
+                            borderRadius: BorderRadius.circular(20)),
+                        labelText: 'Password',
+                        labelStyle: TextStyle(color: Colors.black26),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        suffixIcon: IconButton(
+                          icon: Icon(
+                            color: Colors.black,
+                            obscureText
+                                ? Icons.visibility
+                                : Icons.visibility_off,
+                          ),
+                          onPressed: () {
+                            // Toggle password visibility
+                            setState(() {
+                              obscureText = !obscureText;
+                            });
+                          },
+                        ),
+                      ),
+                      obscureText: obscureText,
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(
+                      left: 20.0,
+                    ),
+                    child: Row(
+                      children: [
+                        Checkbox(
+                          activeColor: Colors.black,
+                          value: rememberMe,
+                          onChanged: (value) {
+                            setState(() {
+                              rememberMe = value!;
+                            });
+                          },
+                        ),
+                        Text('Remember Me'),
+                      ],
+                    ),
+                  ),
+                  SizedBox(
+                    height: 50,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 280),
+                    child: Container(
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20.0)),
+                      height: 50,
+                      width: 250,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.only(
+                                    topLeft: Radius.circular(28),
+                                    bottomLeft: Radius.circular(28))),
+                            primary: Color(0xFFCE4141) // Background color
+                            ),
+                        onPressed: _login,
+                        child: Text(
+                          'Login',
+                          style: TextStyle(fontSize: 18),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ],
-        ),
-      ),
-    );
+          ),
+        ]));
   }
 }

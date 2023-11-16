@@ -10,7 +10,8 @@ class OrderDetailsScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text('Order #${orderData['id_formated']}'),
-        backgroundColor: Colors.indigo, // Set app bar color
+        backgroundColor:
+            Color(0xFFCE4141), // Set app bar color to your brand color
       ),
       body: ListView(
         children: <Widget>[
@@ -18,12 +19,26 @@ class OrderDetailsScreen extends StatelessWidget {
             title: 'Order Status',
             children: <Widget>[
               ListTile(
-                leading: Icon(Icons.timeline),
+                leading: Container(
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Color(0x30CE4141), // Tinted transparent color
+                  ),
+                  child: Icon(Icons.timeline,
+                      color: Color(0xFFCE4141)), // Icon color
+                ),
                 title: Text('Status: ${orderData['last_status'][0]['name']}'),
               ),
               if (orderData['time_created'] != null)
                 ListTile(
-                  leading: Icon(Icons.access_time),
+                  leading: Container(
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Color(0x30CE4141), // Tinted transparent color
+                    ),
+                    child: Icon(Icons.access_time,
+                        color: Color(0xFFCE4141)), // Icon color
+                  ),
                   title: Text('Last Update: ${orderData['time_created']}'),
                 ),
             ],
@@ -32,17 +47,38 @@ class OrderDetailsScreen extends StatelessWidget {
             title: 'Restaurant Information',
             children: <Widget>[
               ListTile(
-                leading: Icon(Icons.store),
+                leading: Container(
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Color(0x30CE4141), // Tinted transparent color
+                  ),
+                  child:
+                      Icon(Icons.store, color: Color(0xFFCE4141)), // Icon color
+                ),
                 title: Text(orderData['restorant']['name'] ?? 'N/A'),
                 subtitle: Text(orderData['restorant']['address'] ?? 'N/A'),
               ),
               ListTile(
-                leading: Icon(Icons.phone),
+                leading: Container(
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Color(0x30CE4141), // Tinted transparent color
+                  ),
+                  child:
+                      Icon(Icons.phone, color: Color(0xFFCE4141)), // Icon color
+                ),
                 title:
                     Text('Phone: ${orderData['restorant']['phone'] ?? 'N/A'}'),
               ),
               ListTile(
-                leading: Icon(Icons.info),
+                leading: Container(
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Color(0x30CE4141), // Tinted transparent color
+                  ),
+                  child:
+                      Icon(Icons.info, color: Color(0xFFCE4141)), // Icon color
+                ),
                 title: Text(
                     'FB: ${orderData['restorant']['fb_username'] ?? 'N/A'}'),
               ),
@@ -54,12 +90,26 @@ class OrderDetailsScreen extends StatelessWidget {
               return Column(
                 children: <Widget>[
                   ListTile(
-                    leading: Icon(Icons.fastfood),
+                    leading: Container(
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: Color(0x30CE4141), // Tinted transparent color
+                      ),
+                      child: Icon(Icons.fastfood,
+                          color: Color(0xFFCE4141)), // Icon color
+                    ),
                     title: Text('${item['qty']} X ${item['name']}'),
                     subtitle: Text('Price: ر.ع.${item['price']}'),
                   ),
                   ListTile(
-                    leading: Icon(Icons.dashboard),
+                    leading: Container(
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: Color(0x30CE4141), // Tinted transparent color
+                      ),
+                      child: Icon(Icons.dashboard,
+                          color: Color(0xFFCE4141)), // Icon color
+                    ),
                     title:
                         Text('Size: ${item['pivot']['variant_name'] ?? 'N/A'}'),
                   ),
@@ -71,32 +121,74 @@ class OrderDetailsScreen extends StatelessWidget {
             title: 'Bill Details',
             children: <Widget>[
               ListTile(
-                leading: Icon(Icons.location_on),
+                leading: Container(
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Color(0x30CE4141), // Tinted transparent color
+                  ),
+                  child: Icon(Icons.location_on,
+                      color: Color(0xFFCE4141)), // Icon color
+                ),
                 title: Text('Delivery Address'),
                 subtitle: Text(orderData['whatsapp_address'] ?? 'N/A'),
               ),
               ListTile(
-                leading: Icon(Icons.comment),
+                leading: Container(
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Color(0x30CE4141), // Tinted transparent color
+                  ),
+                  child: Icon(Icons.comment,
+                      color: Color(0xFFCE4141)), // Icon color
+                ),
                 title: Text('Comment'),
                 subtitle: Text(orderData['comment'] ?? 'N/A'),
               ),
               ListTile(
-                leading: Icon(Icons.phone),
+                leading: Container(
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Color(0x30CE4141), // Tinted transparent color
+                  ),
+                  child:
+                      Icon(Icons.phone, color: Color(0xFFCE4141)), // Icon color
+                ),
                 title: Text('Contact Phone'),
                 subtitle: Text(orderData['phone'] ?? 'N/A'),
               ),
               ListTile(
-                leading: Icon(Icons.attach_money),
+                leading: Container(
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Color(0x30CE4141), // Tinted transparent color
+                  ),
+                  child: Icon(Icons.attach_money,
+                      color: Color(0xFFCE4141)), // Icon color
+                ),
                 title:
                     Text('Order Total: ر.ع.${orderData['order_price'] ?? 0.0}'),
               ),
               ListTile(
-                leading: Icon(Icons.payment),
+                leading: Container(
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Color(0x30CE4141), // Tinted transparent color
+                  ),
+                  child: Icon(Icons.payment,
+                      color: Color(0xFFCE4141)), // Icon color
+                ),
                 title: Text(
                     'Payment Method: ${orderData['payment_method'] ?? 'N/A'}'),
               ),
               ListTile(
-                leading: Icon(Icons.check_circle),
+                leading: Container(
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Color(0x30CE4141), // Tinted transparent color
+                  ),
+                  child: Icon(Icons.check_circle,
+                      color: Color(0xFFCE4141)), // Icon color
+                ),
                 title: Text(
                     'Payment Status: ${orderData['payment_status'] ?? 'N/A'}'),
               ),
@@ -122,12 +214,14 @@ class OrderDetailsScreen extends StatelessWidget {
               style: TextStyle(
                 fontSize: 18.0,
                 fontWeight: FontWeight.bold,
-                color: Colors.indigo, // Set section title color
+                color: Color(
+                    0xFFCE4141), // Set section title color to your brand color
               ),
             ),
           ),
           Divider(
-            color: Colors.indigo, // Set section divider color
+            color: Color(
+                0xFFCE4141), // Set section divider color to your brand color
           ),
           ...children,
         ],

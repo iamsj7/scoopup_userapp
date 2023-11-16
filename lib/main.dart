@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:scoopup_userapp/account_screen.dart';
 import 'package:scoopup_userapp/city_screen.dart';
 import 'package:scoopup_userapp/home_screen.dart';
 import 'package:scoopup_userapp/orders_screen.dart';
@@ -19,10 +20,10 @@ class _MyAppState extends State<MyApp> {
   final List<Widget> _screens = [
     HomeScreen(),
     CityScreen(),
-    OrderScreen(), // Use your AccountScreen here
+    AccountScreen(), // Use your AccountScreen here
   ];
 
-  String? authToken; // Store the login token
+  String? authToken = 'temp'; // Store the login token, set to a default value
   String? userName; // Store the user's name
   String? userEmail; // Store the user's email
 
@@ -38,6 +39,10 @@ class _MyAppState extends State<MyApp> {
     if (token != null) {
       setState(() {
         authToken = token;
+      });
+    } else {
+      setState(() {
+        authToken = null;
       });
     }
   }
@@ -75,11 +80,13 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       title: 'Flutter REST App',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+      primaryColor: Colors.black54
       ),
       home: authToken != null
           ? Scaffold(
+            
               drawer: Drawer(
+                
                 child: ListView(
                   padding: EdgeInsets.zero,
                   children: [
